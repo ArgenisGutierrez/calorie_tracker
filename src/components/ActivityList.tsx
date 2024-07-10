@@ -1,28 +1,25 @@
 import { Activity } from "../types"
 import { categories } from "../data/categories"
-import { useMemo, Dispatch } from "react"
+import { useMemo } from "react"
 import { PencilSquareIcon, XMarkIcon } from "@heroicons/react/24/outline"
 
-import { ActivityActions } from "../reducers/activity-reducer"
+import { useActivity } from "../hooks/useActivity"
 
-type ActivityListProps = {
-  activities: Activity[]
-  dispatch: Dispatch<ActivityActions>
-}
-export function ActivityList({ activities, dispatch }: ActivityListProps) {
+export function ActivityList() {
+  const { state, dispatch } = useActivity()
 
   const categoryName = useMemo(() => (category: Activity['category']) =>
     categories.map(cat => cat.id === category ? cat.name : '')
-    , [activities])
+    , [state.activities])
 
-  const isEmptyActivities = useMemo(() => activities.length === 0, [activities])
+  const isEmptyActivities = useMemo(() => state.activities.length === 0, [state.activities])
 
   return (
     <>
       <h2 className="text-4xl font-bold text-slate-600 text-center">Comida y Actividades:</h2>
       {isEmptyActivities ?
         <p className="text-center my-2">No hay Actividades registradas...</p> :
-        activities.map(activitiy => (
+        state.activities.map(activitiy => (
           <div key={activitiy.id} className="flex justify-between px-5 py-2 mt-5 bg-sky-100 shadow shadow-slate-400 rounded-md">
             <div className="space-y-2 relative my-2">
               <p className={`absolute -top-8 -left-8 px-10 p-2 text-white uppercase font-bold rounded-md 
